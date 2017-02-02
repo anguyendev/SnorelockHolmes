@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             destDir.mkdirs();
         }
 
-
         mStartStopButton = (TextView)findViewById(R.id.start_stop_button);
         mStartStopButton.setOnClickListener(mStartStopListener);
     }
