@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        View v = getLayoutInflater().inflate(R.layout.activity_main, null, false);
-        mStartStopButton = (TextView)v.findViewById(R.id.start_stop_button);
+        mStartStopButton = (TextView)findViewById(R.id.start_stop_button);
         mStartStopButton.setOnClickListener(mStartStopListener);
     }
 }
