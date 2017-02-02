@@ -68,7 +68,7 @@ public class RecordManager extends Service implements Runnable {
 			mMediaRecorder.setAudioSamplingRate(sampleRate);
 			SimpleDateFormat formatter0 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 			String filenameString = formatter0.format(System.currentTimeMillis());
-			recordfilename = Environment.getExternalStorageDirectory()+"/SnoreHunter/"+filenameString+".3gp";
+			recordfilename = Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"+filenameString+".3gp";
 			mMediaRecorder.setOutputFile(recordfilename);
 			mMediaRecorder.setMaxDuration(MAX_LENGTH);
 			mMediaRecorder.prepare();
@@ -209,7 +209,7 @@ public class RecordManager extends Service implements Runnable {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		SharedPreferences preference1 = getSharedPreferences("snorehunter",MODE_PRIVATE);
+		SharedPreferences preference1 = getSharedPreferences("snorelockholmes",MODE_PRIVATE);
 	    sampleRate = preference1.getInt("samplerate", 8000);
 	    threshold = preference1.getInt("threshold", 10);
 	    minTimes = preference1.getInt("mintimes", 4);

@@ -30,7 +30,7 @@ import com.example.nguyea3.snorelockholmes.RecordBean;
 public class XmlManager {
 
 	public static void XmlFileCreator(RecordBean rb) {
-		File xmlfile = new File(Environment.getExternalStorageDirectory()+"/SnoreHunter/"
+		File xmlfile = new File(Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"
 				+ "record.xml");
 
 		try {
