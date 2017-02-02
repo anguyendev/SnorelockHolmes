@@ -1,31 +1,110 @@
 package com.example.nguyea3.snorelockholmes;
 
-import android.os.Environment;
-import android.util.Log;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Environment;
+import android.util.Log;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import com.example.nguyea3.snorelockholmes.RecordBean;
 
 public class XmlManager {
 
 	public static void XmlFileCreator(RecordBean rb) {
 		File xmlfile = new File(Environment.getExternalStorageDirectory()+"/SnoreHunter/"
 				+ "record.xml");
+
 		try {
+
+			if(xmlfile.exists())
+			{
+				xmlfile.delete();
+			}
+
+			xmlfile.createNewFile();
+
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.newDocument();
+			document.setXmlVersion("1.0");
+			Element root = document.createElement("records"); // 创建根节点
+			document.appendChild(root); // 将根节点添加到Document对象中
+
+			Element recordElement = document.createElement("record");
+			// recordElement.setAttribute("date", rb.getDate());
+
+			Element dateElement = document.createElement("date");
+			dateElement.setTextContent(rb.getDate());
+			recordElement.appendChild(dateElement);
+
+			Element timeElement = document.createElement("time");
+			timeElement.setTextContent(rb.getTime());
+			recordElement.appendChild(timeElement);
+
+			Element durationElement = document.createElement("duration");
+			durationElement.setTextContent(rb.getDuration());
+			recordElement.appendChild(durationElement);
+
+			Element fileElement = document.createElement("recordfile");
+			fileElement.setTextContent(rb.getRecordFile());
+			recordElement.appendChild(fileElement);
+
+			Element thresholdElement = document.createElement("threshold");
+			thresholdElement.setTextContent(rb.getThreshold());
+			recordElement.appendChild(thresholdElement);
+
+			if (rb.getStartPoints().size() > 0) {
+				for (int i = 0; i < rb.getStartPoints().size(); i++) {
+					Element startElement = document
+							.createElement("startpoint");
+					startElement.setTextContent(rb.getStartPoints().get(i));
+					recordElement.appendChild(startElement);
+				}
+			} else {
+				Element startElement = document.createElement("startpoint");
+				startElement.setTextContent("");
+				recordElement.appendChild(startElement);
+			}
+			root.appendChild(recordElement);
+			TransformerFactory transFactory = TransformerFactory
+					.newInstance(); // 开始把Document映射到文件
+			Transformer transFormer = transFactory.newTransformer();
+			DOMSource domSource = new DOMSource(document); // 设置输出结果
+
+			FileOutputStream out = new FileOutputStream(xmlfile); // 文件输出流
+			StreamResult xmlResult = new StreamResult(out); // 设置输入源
+			transFormer.transform(domSource, xmlResult); // 输出xml文件
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+
+		/*try {
 			if (!xmlfile.exists()) {
 
 				xmlfile.createNewFile();
@@ -138,7 +217,7 @@ public class XmlManager {
 
 		} catch (Exception e) {
 			Log.e("Exception", "bug");
-		}
+		}*/
 
 	}
 

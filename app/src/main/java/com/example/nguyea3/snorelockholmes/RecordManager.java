@@ -1,5 +1,10 @@
 package com.example.nguyea3.snorelockholmes;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +13,9 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import com.example.nguyea3.snorelockholmes.RecordBean;
+
+import java.util.*;
 
 
 public class RecordManager extends Service implements Runnable {
@@ -89,6 +93,7 @@ public class RecordManager extends Service implements Runnable {
 					"call startAmr(File mRecAudioFile) failed!"
 							+ e.getMessage());
 		}
+
 	}
 
 	/**
@@ -108,8 +113,17 @@ public class RecordManager extends Service implements Runnable {
 		onStopRecord = true;
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		endTimeString = formatter.format(System.currentTimeMillis());
-		RecordBean rb = new RecordBean(date, startTimeString+"-"+endTimeString, duration+"", snorepoints, recordfilename, Integer.toString(threshold));
+
+		// hardcode values in xml file
+		duration = 3600;
+		snorepoints.clear();
+		// end hardcoded values
+
+		RecordBean rb = new RecordBean(date, startTimeString+"-"+endTimeString, duration+"", snorepoints, recordfilename,Integer.toString(threshold));
 		XmlManager.XmlFileCreator(rb);
+
+		// add AWS code here
+
 		return endTime - startTime;
 	}
     
@@ -122,7 +136,7 @@ public class RecordManager extends Service implements Runnable {
 
 				if (estimateSnore()) {
 					if(!snoring){
-					snoreStartTime = System.currentTimeMillis();
+					snoreStartTime =System.currentTimeMillis();
 					snorepoints.add(Math.abs((snoreStartTime-startTime-5000))+"");
 					snoring = true;
 					}
@@ -141,7 +155,7 @@ public class RecordManager extends Service implements Runnable {
 					}
 
 				}
-				int sleepTime =(int)(4* Math.random());
+				int sleepTime =(int)(4*Math.random());
 				Thread.sleep(sleepTime*1000+3000);
 				Log.i("sleeptime", sleepTime*1000+3000+"");
 
@@ -166,7 +180,7 @@ public class RecordManager extends Service implements Runnable {
 					 int ratio = mMediaRecorder.getMaxAmplitude() / BASE;  
 			            int vuSize = 0;// 分贝  
 			            if (ratio > 1)  
-			                vuSize = (int) (20 * Math.log10(ratio));
+			                vuSize = (int) (20 * Math.log10(ratio));  
 					Log.i("estimate",threshold+""+minTimes+sampleRate);
 					Log.i("estimate",vuSize+"");
 
