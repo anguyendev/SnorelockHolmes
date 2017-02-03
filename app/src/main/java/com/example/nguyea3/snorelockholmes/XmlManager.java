@@ -1,9 +1,12 @@
 package com.example.nguyea3.snorelockholmes;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,79 +35,39 @@ import com.example.nguyea3.snorelockholmes.RecordBean;
 public class XmlManager {
 
 	public static void XmlFileCreator(RecordBean rb) {
-		File xmlfile = new File(Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"
-				+ "record.xml");
+		File snorefile = new File(Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"
+				+ "snore.json");
 
 		try {
 
-			if(xmlfile.exists())
+			if(snorefile.exists())
 			{
-				xmlfile.delete();
+				snorefile.delete();
 			}
 
-			xmlfile.createNewFile();
+			snorefile.createNewFile();
 
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.newDocument();
-			document.setXmlVersion("1.0");
-			Element root = document.createElement("records"); // 创建根节点
-			document.appendChild(root); // 将根节点添加到Document对象中
+			JSONObject json = new JSONObject();
+			JSONObject snore = new JSONObject();
 
-			Element recordElement = document.createElement("record");
-			// recordElement.setAttribute("date", rb.getDate());
+			snore.put("date", rb.getDate());
+			snore.put("time", rb.getTime());
+			snore.put("duration", rb.getDuration());
+			snore.put("recordfile", rb.getRecordFile());
+			json.put("snore",snore);
 
-			Element dateElement = document.createElement("date");
-			dateElement.setTextContent(rb.getDate());
-			recordElement.appendChild(dateElement);
 
-			Element timeElement = document.createElement("time");
-			timeElement.setTextContent(rb.getTime());
-			recordElement.appendChild(timeElement);
-
-			Element durationElement = document.createElement("duration");
-			durationElement.setTextContent(rb.getDuration());
-			recordElement.appendChild(durationElement);
-
-			Element fileElement = document.createElement("recordfile");
-			fileElement.setTextContent(rb.getRecordFile());
-			recordElement.appendChild(fileElement);
-
-			Element thresholdElement = document.createElement("threshold");
-			thresholdElement.setTextContent(rb.getThreshold());
-			recordElement.appendChild(thresholdElement);
-
-			if (rb.getStartPoints().size() > 0) {
-				for (int i = 0; i < rb.getStartPoints().size(); i++) {
-					Element startElement = document
-							.createElement("startpoint");
-					startElement.setTextContent(rb.getStartPoints().get(i));
-					recordElement.appendChild(startElement);
-				}
-			} else {
-				Element startElement = document.createElement("startpoint");
-				startElement.setTextContent("");
-				recordElement.appendChild(startElement);
-			}
-			root.appendChild(recordElement);
-			TransformerFactory transFactory = TransformerFactory
-					.newInstance(); // 开始把Document映射到文件
-			Transformer transFormer = transFactory.newTransformer();
-			DOMSource domSource = new DOMSource(document); // 设置输出结果
-
-			FileOutputStream out = new FileOutputStream(xmlfile); // 文件输出流
-			StreamResult xmlResult = new StreamResult(out); // 设置输入源
-			transFormer.transform(domSource, xmlResult); // 输出xml文件
+			Writer output = new BufferedWriter(new FileWriter(snorefile));
+			output.write(json.toString());
+			output.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
 
 		/*try {
 			if (!xmlfile.exists()) {
