@@ -12,7 +12,6 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
     TextView mStartStopButton;
-    public File destDir;
 
     View.OnClickListener mStartStopListener = new View.OnClickListener() {
         @Override
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        destDir = new File(Environment.getExternalStorageDirectory()+"/SnorelockHolmes/");
+        File destDir = new File(Environment.getExternalStorageDirectory()+"/SnorelockHolmes/");
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
