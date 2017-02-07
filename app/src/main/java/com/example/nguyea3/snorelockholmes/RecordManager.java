@@ -13,6 +13,12 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.nguyea3.snorelockholmes.RecordBean;
 
 import java.util.*;
@@ -39,9 +45,7 @@ public class RecordManager extends Service implements Runnable {
 	private boolean snoring = false;
 	private boolean onStopRecord = false;
 
-	
-
-	public RecordManager(){
+    public RecordManager(){
 
 	}
 
@@ -62,13 +66,13 @@ public class RecordManager extends Service implements Runnable {
 			mMediaRecorder = new MediaRecorder();
 		try {
 			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+			mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 			mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
 
 			mMediaRecorder.setAudioSamplingRate(sampleRate);
 			SimpleDateFormat formatter0 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 			String filenameString = formatter0.format(System.currentTimeMillis());
-			recordfilename = Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"+filenameString+".3gp";
+			recordfilename = Environment.getExternalStorageDirectory()+"/SnorelockHolmes/"+"snore1.mp3";
 			mMediaRecorder.setOutputFile(recordfilename);
 			mMediaRecorder.setMaxDuration(MAX_LENGTH);
 			mMediaRecorder.prepare();
@@ -117,12 +121,10 @@ public class RecordManager extends Service implements Runnable {
 		// hardcode values in xml file
 		duration = 3600;
 		snorepoints.clear();
-		// end hardcoded values
+		// end hardcoded value
 
 		RecordBean rb = new RecordBean(date, startTimeString+"-"+endTimeString, duration+"", snorepoints, recordfilename,Integer.toString(threshold));
 		XmlManager.XmlFileCreator(rb);
-
-		// add AWS code here
 
 		return endTime - startTime;
 	}
