@@ -30,6 +30,9 @@ import org.w3c.dom.NodeList;
 import android.os.Environment;
 import android.util.Log;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.nguyea3.snorelockholmes.RecordBean;
 
 public class XmlManager {
@@ -66,7 +69,6 @@ public class XmlManager {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
 
 
 		/*try {
